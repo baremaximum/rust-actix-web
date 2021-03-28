@@ -1,2 +1,2 @@
-language: rust
-fprocess: main
+language: rust-actix-web
+fprocess: /usr/bin/main
