@@ -6,16 +6,14 @@ pub async fn handler(_req: HttpRequest) -> impl Responder {
 }
 
 mod tests {
-    #[allow(unused_imports)]
-    use super::*;
-    #[allow(unused_imports)]
-    use actix_web::{rt as actix_rt, test, web, App};
+    use actix_web;
+    use actix_web::rt as actix_rt;
     #[actix_rt::test]
     async fn test_handler() {
-        let mut app = test::init_service(App::new().service(handler)).await;
-        // Change HTTP method below if required
-        let req = test::TestRequest::post().uri("/").to_request();
-        let response = test::call_service(&mut app, req).await;
+        let mut app =
+            actix_web::test::init_service(actix_web::App::new().service(super::handler)).await;
+        let req = actix_web::test::TestRequest::post().uri("/").to_request();
+        let response = actix_web::test::call_service(&mut app, req).await;
         assert!(response.status().is_success());
     }
 }
