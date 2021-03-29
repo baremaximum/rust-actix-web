@@ -13,7 +13,6 @@ mod tests {
     #[actix_rt::test]
     async fn test_handler() {
         let mut app = test::init_service(App::new().service(handler)).await;
-        // Change HTTP method below if required
         let req = test::TestRequest::post().uri("/").to_request();
         let response = test::call_service(&mut app, req).await;
         assert!(response.status().is_success());
