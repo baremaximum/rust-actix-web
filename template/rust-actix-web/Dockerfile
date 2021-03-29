@@ -1,6 +1,9 @@
 FROM openfaas/of-watchdog:0.7.2 as watchdog
 
-FROM rust:1.51 as builder
+FROM rust:1.51-alpine as builder
+
+# Add alpine-sdk so dynamic linking for musl will work
+RUN apk --no-cache add alpine-sdk
 
 WORKDIR /home/rust
 
@@ -10,15 +13,14 @@ COPY ./ ./
 # Build and install application
 RUN cargo install --path ./main
 
-FROM debian:buster-slim as runner
+FROM alpine:3.12 as runner
 
 # Allows user to specify additional packages to include at build time
 ARG ADDITIONAL_PACKAGE
 
 # Install packages and add non-root user
-RUN apt update && apt-get install -y curl ca-certificates ${ADDITIONAL_PACKAGE} --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/* \
-    && addgroup --system app && adduser --system --ingroup app app
+RUN apk --no-cache add curl ca-certificates ${ADDITIONAL_PACKAGE} \
+    && addgroup -S app && adduser -S -g app app
 
 ENV USER=app
 
