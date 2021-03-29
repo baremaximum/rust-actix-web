@@ -39,7 +39,7 @@ functions:
 
 ```
 
-## The Handler Function Crate
+## Handler Function Crate
 
 This template includes a library crate that publishes the handler function:
 
@@ -52,7 +52,7 @@ pub async fn handler(_req: HttpRequest) -> impl Responder {
 }
 ```
 
-## The Main Binary Crate
+## Main Binary Crate
 
 The handler function crate is run from a separate intallable binary crate. Unlike the function crate, the main binary crate does not get copied from the template into the function directory. If you want to do things that require making changes to the binary crate (e.g. adding middleware, application state, etc.), those changes can be made in the local version of the template. The local template can be found in the `template/rust-actix-web/main` directory that was created when the template was pulled. Alternatively, the template can also be forked in order to create a custom version.
 

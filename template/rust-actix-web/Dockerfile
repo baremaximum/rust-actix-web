@@ -15,22 +15,21 @@ RUN cargo install --path ./main
 
 FROM alpine:3.12 as runner
 
-# Allows user to specify additional packages to include at build time
-ARG ADDITIONAL_PACKAGE
+# Add non-root user
+RUN addgroup -S app && adduser -S -g app app
 
-# Install packages and add non-root user
-RUN apk --no-cache add curl ca-certificates ${ADDITIONAL_PACKAGE} \
-    && addgroup -S app && adduser -S -g app app
-
-ENV USER=app
-
-# Copy compiled function from builder 
+# Copy function binary
 COPY --from=builder /usr/local/cargo/bin/main /usr/local/bin/main
-RUN chmod +x /usr/local/bin/main
+RUN chown -R app:app /usr/local/bin/main \ 
+    && chmod +x /usr/local/bin/main
 
 # Copy of-watchdog binary
 COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
-RUN chmod +x /usr/bin/fwatchdog
+RUN chown -R app:app /usr/bin/fwatchdog \ 
+    && chmod +x /usr/bin/fwatchdog
+
+# Switch to non-root user
+USER app
 
 # Set up watchdog for HTTP mode
 ENV fprocess="main"
