@@ -22,9 +22,9 @@ Then, create a new function by running:
 $ faas-cli new test-function --lang rust-actix-web
 ```
 
-This will create a 'test-funtion.yml' file in the current directory, as well as a new directory named 'test-function' that contains your function's code.
+This will create a 'test-funtion.yml' file in the current directory, as well as a new directory named 'test-function' that contains the function's code.
 
-Edit the 'test-function.yml' file to ensure that the image tag points to a repository that is reachable from your Kubernetes cluster:
+Edit the 'test-function.yml' file to ensure that the image tag points to a repository that is reachable from the Kubernetes cluster:
 
 ```yaml
 version: 1.0
