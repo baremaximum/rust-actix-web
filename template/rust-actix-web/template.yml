@@ -1,2 +1,2 @@
 language: rust-actix-web
-fprocess: /usr/bin/main
+fprocess: main
