@@ -7,7 +7,7 @@ WORKDIR /home/rust
 # Copy all the sources
 COPY ./ ./
 
-RUN cargo build --workspace --target x86_64-unknown-linux-musl --release
+RUN cargo build --target x86_64-unknown-linux-musl --release
 
 FROM alpine:3.11 as runner
 
