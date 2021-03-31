@@ -31,6 +31,11 @@ RUN chown -R app:app /usr/bin/fwatchdog \
 # Switch to non-root user
 USER app
 
+# Build args for setting env variables
+ARG RUST_LOG=INFO
+ARG WORKER_POOL_SIZE=1
+ARG JSON_MAX_SIZE=4096
+
 # Set up watchdog for HTTP mode
 ENV fprocess="main"
 ENV mode="http"
