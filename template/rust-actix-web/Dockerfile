@@ -36,10 +36,13 @@ ARG RUST_LOG=INFO
 ARG WORKER_POOL_SIZE=1
 ARG JSON_MAX_SIZE=4096
 
-# Set up watchdog for HTTP mode
-ENV fprocess="main"
-ENV mode="http"
-ENV upstream_url="http://127.0.0.1:3000"
+# Set env variables
+ENV fprocess="main" \
+    mode="http" \
+    upstream_url="http://127.0.0.1:3000" \
+    RUST_LOG=${RUST_LOG} \
+    WORKER_POOL_SIZE=${WORKER_POOL_SIZE} \
+    JSON_MAX_SIZE=${JSON_MAX_SIZE}
 
 EXPOSE 8080
 
