@@ -79,6 +79,9 @@ Assuming you have faas-cli, and it is logged in to a kubernetes cluster with ope
 $ faas-cli up -f test-function.yml
 ```
 
+## Architecture
+Cargo uses the host architecture as the build target. This behavior can be modified by adding a `--target` flag in the template Dockerfile. 
+
 ## Example - Bean counter
 
 This example demonstrates how to create a function that uses application state to keep track of a counter that can safely be read and modified by multiple threads. Users can send PATCH requests to the function with a 32 bit signed integer, and the function adds that value to the current count, and responds with the new count.
