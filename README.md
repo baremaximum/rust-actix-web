@@ -80,7 +80,7 @@ $ faas-cli up -f test-function.yml
 ```
 
 ## Architecture
-Cargo uses the host architecture as the build target. This behavior can be modified by adding a `--target` flag to the `cargo install` command in the template Dockerfile. Note that doing so will change the location of the installed binary if a `--path` flag is not provided. The template expects to find the installed binary in the `/usr/local/bin/main` directory. 
+Cargo uses the host architecture as the build target. This behavior can be modified by adding a `--target` flag to the `cargo install` command in the template Dockerfile. Note that doing so will change the location of the installed binary if a `--path` flag is not provided. The template expects to find the installed binary in the `/usr/local/cargo/bin/main` directory. 
 
 ## Example - Bean counter
 
