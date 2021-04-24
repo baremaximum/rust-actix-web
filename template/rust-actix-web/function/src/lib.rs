@@ -7,7 +7,6 @@ pub async fn handler(_req: HttpRequest) -> impl Responder {
     "OK"
 }
 
-#[actix_web::main]
 pub async fn app_init() -> std::io::Result<()> {
     // get worker pool size from env.
     let cnt = env::var("WORKER_POOL_SIZE");
