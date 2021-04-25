@@ -52,9 +52,15 @@ pub async fn handler(_req: HttpRequest) -> impl Responder {
 }
 ```
 
-## Main Binary Crate
+This crate also publishes the function's app object so that it can be modified from here if necessary:
 
-The handler function crate is run from a separate intallable binary crate. Unlike the function crate, the main binary crate does not get copied from the template into the function directory. If you want to do things that require making changes to the binary crate (e.g. adding middleware, application state, etc.), those changes can be made in the local version of the template. The local template can be found in the `template/rust-actix-web/main` directory that was created when the template was pulled. Alternatively, the template can also be forked in order to create a custom version.
+```rust
+pub async fn app_init() -> std::io::Result<()> {
+  ...
+}
+
+```
+
 
 ## Build Args
 
@@ -105,9 +111,11 @@ This example demonstrates how to create a function that uses application state t
 
 <em>./my-function/src/lib.rs</em>:
 ```rust
-use actix_web::{patch, web, HttpResponse, Responder};
+use actix_web::{middleware, patch, web, App, HttpResponse, HttpServer, Responder};
+use log::info;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
+use std::env;
 use std::sync::atomic::{AtomicI32, Ordering};
 
 // Incoming request struct
@@ -136,24 +144,16 @@ pub async fn handler(
 ```toml
 [dependencies]
 actix-web = "3"
+log = "0.4.14"
+actix-http = "2.2.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 ```
 
-In order to set application state, some changes need to be made to the main binary crate in the template.
+In order to set application state, some changes need to be made to the app object as well:
 
-<em>./template/rust-actix-web/main/src/main.rs</em>:
 ```rust
-use actix_web::{web, middleware, App, HttpServer};
-use log::info;
-use function;
-use std::env;
-use std::sync::atomic::AtomicI32;
-
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    env_logger::init();
-
+pub async fn app_init() -> std::io::Result<()> {
     // get worker pool size from env.
     let cnt = env::var("WORKER_POOL_SIZE");
     let mut worker_count: usize = 1;
@@ -182,15 +182,16 @@ async fn main() -> std::io::Result<()> {
     let bean_counter = web::Data::new(AtomicI32::new(0));
 
     // Create and start the server
-    HttpServer::new(move || 
+     HttpServer::new(move || {
         App::new()
-        .app_data(bean_counter.clone()) // pass counter to handler
-        .wrap(middleware::Logger::default())
-        .data(web::JsonConfig::default().limit(max_size))
-        .service(function::handler))
-        .workers(worker_count)
-        .bind("127.0.0.1:3000")?
-        .run()
-        .await
+            .app_data(bean_counter.clone()) // pass counter to handler
+            .wrap(middleware::Logger::default())
+            .data(web::JsonConfig::default().limit(max_size))
+            .service(handler)
+    })
+    .workers(worker_count)
+    .bind("127.0.0.1:3000")?
+    .run()
+    .await
 }
 ```
